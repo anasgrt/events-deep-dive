@@ -15,12 +15,6 @@ jobs:
 
     steps:
 
-    - name: Lint
-      run: npm run lint
-
-    - name: output events data
-      run: echo " ${{ toJson(github.event) }}"
-
     - name: Get Code
       uses: actions/checkout@v3
 
@@ -32,6 +26,9 @@ jobs:
     - name: Install Dependancies
       run: npm ci
 
+    - name: Lint
+      run: npm run lint
+
     - name: Test Code
       run: npm run test
 
@@ -40,3 +37,6 @@ jobs:
 
     - name: Deploy Project
       run: echo "Deploying ..."
+
+    - name: output events data
+      run: echo " ${{ toJson(github.event) }}"
