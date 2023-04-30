@@ -1,42 +1,104 @@
-name: Events Demo
+# name: Events Demo
+
+# on:
+#   pull_request:
+#     branches:
+#     - main
+#   workflow_dispatch:
+#   push:
+#     branches:
+#     - main
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+
+#     - name: Get Code
+#       uses: actions/checkout@v3
+
+#     - name: Setup Node
+#       uses: actions/setup-node@v3
+#       with:
+#         node-version: '18'
+
+#     - name: Install Dependancies
+#       run: npm ci
+
+#     - name: Lint
+#       run: |
+#         npm run lint
+
+#     - name: Test Code
+#       run: npm run test
+
+#     - name: Build Code
+#       run: npm run build
+
+#     - name: Deploy Project
+#       run: echo "Deploying ..."
+
+#     - name: output events data
+#       run: echo " ${{ toJson(github.event) }}"
+
+
+name: Build actions
 
 on:
-  pull_request:
-    branches:
-    - main
-  workflow_dispatch:
   push:
-    branches:
-    - main
+    branches: [main, Add-github-actions-workflows]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
 
+  Lint:
+    runs-on: ubuntu-latest
     steps:
 
-    - name: Get Code
-      uses: actions/checkout@v3
-
-    - name: Setup Node
+    - name: Get repository
+      uses: actions/checkout@v2
+    - name: Install Node
       uses: actions/setup-node@v3
       with:
         node-version: '18'
-
-    - name: Install Dependancies
+    - name: Install dependencies
       run: npm ci
+    - name: Run Linter
+      run: |
+        npm run lint
+  Test:
+    needs: Lint
+    runs-on: ubuntu-latest
+    steps:
 
-    - name: Lint
-      run: npm run lint
-
-    - name: Test Code
+    - name: Get repository
+      uses: actions/checkout@v2
+    - name: Install Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    - name: Install dependencies
+      run: npm ci
+    - name: Test
       run: npm run test
 
-    - name: Build Code
+  Deploy:
+    needs: Test
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Get repository
+      uses: actions/checkout@v2
+    - name: Install Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    - name: Install dependencies
+      run: npm ci
+    - name: Build
       run: npm run build
-
-    - name: Deploy Project
-      run: echo "Deploying ..."
-
-    - name: output events data
-      run: echo " ${{ toJson(github.event) }}"
+    - name: Deploy
+      run: echo "deploying...."
